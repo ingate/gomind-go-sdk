@@ -19,7 +19,15 @@ type Client struct {
 }
 
 // NewClient creates a new Gomind client.
-func NewClient(baseURL, apiKey string, opts ...Option) *Client {
+func NewClient(baseURL, apiKey string, opts ...Option) (*Client, error) {
+	if baseURL == "" {
+		baseURL = "https://gomind.osushi.io"
+	}
+
+	if apiKey == "" {
+		return nil, fmt.Errorf("api key is required")
+	}
+
 	c := &Client{
 		baseURL: baseURL,
 		apiKey:  apiKey,
@@ -33,7 +41,7 @@ func NewClient(baseURL, apiKey string, opts ...Option) *Client {
 		opt(c)
 	}
 
-	return c
+	return c, nil
 }
 
 // doRequest performs an HTTP request to the Gomind API.
