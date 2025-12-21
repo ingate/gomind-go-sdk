@@ -48,24 +48,19 @@ func defToOpenAIResponses(def Definition) responses.ToolUnionParam {
 
 func paramsToOpenAI(params []*Param) shared.FunctionParameters {
 	properties := make(map[string]any)
-	var required []string
+	required := make([]string, 0, len(params))
 
 	for _, p := range params {
 		properties[p.Name] = paramToOpenAI(p)
-		if p.Required {
-			required = append(required, p.Name)
-		}
+		required = append(required, p.Name) // ALL params required for strict mode
 	}
 
-	result := shared.FunctionParameters{
+	return shared.FunctionParameters{
 		"type":                 "object",
 		"properties":           properties,
+		"required":             required,
 		"additionalProperties": false,
 	}
-	if len(required) > 0 {
-		result["required"] = required
-	}
-	return result
 }
 
 func paramToOpenAI(p *Param) map[string]any {
@@ -80,18 +75,14 @@ func paramToOpenAI(p *Param) map[string]any {
 
 	if p.Type == TypeObject && p.Properties != nil {
 		props := make(map[string]any)
-		var required []string
+		required := make([]string, 0, len(p.Properties))
 		for name, prop := range p.Properties {
 			props[name] = paramToOpenAI(prop)
-			if prop.Required {
-				required = append(required, name)
-			}
+			required = append(required, name) // ALL props required for strict mode
 		}
 		result["properties"] = props
+		result["required"] = required
 		result["additionalProperties"] = false
-		if len(required) > 0 {
-			result["required"] = required
-		}
 	}
 
 	return result
