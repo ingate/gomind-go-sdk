@@ -3,15 +3,26 @@ package tools
 import (
 	"github.com/openai/openai-go/v3"
 	"github.com/openai/openai-go/v3/packages/param"
+	"github.com/openai/openai-go/v3/responses"
 	"github.com/openai/openai-go/v3/shared"
 )
 
-// ForOpenAI returns all Gomind tools in OpenAI format.
+// ForOpenAI returns all Gomind tools in OpenAI Chat Completions API format.
 func ForOpenAI() []openai.ChatCompletionToolUnionParam {
 	defs := Definitions()
 	tools := make([]openai.ChatCompletionToolUnionParam, len(defs))
 	for i, def := range defs {
 		tools[i] = defToOpenAI(def)
+	}
+	return tools
+}
+
+// ForOpenAIResponses returns all Gomind tools in OpenAI Responses API format.
+func ForOpenAIResponses() []responses.ToolUnionParam {
+	defs := Definitions()
+	tools := make([]responses.ToolUnionParam, len(defs))
+	for i, def := range defs {
+		tools[i] = defToOpenAIResponses(def)
 	}
 	return tools
 }
@@ -22,6 +33,17 @@ func defToOpenAI(def Definition) openai.ChatCompletionToolUnionParam {
 		Description: param.NewOpt(def.Description),
 		Parameters:  paramsToOpenAI(def.Parameters),
 	})
+}
+
+func defToOpenAIResponses(def Definition) responses.ToolUnionParam {
+	return responses.ToolUnionParam{
+		OfFunction: &responses.FunctionToolParam{
+			Name:        def.Name,
+			Description: param.NewOpt(def.Description),
+			Parameters:  paramsToOpenAI(def.Parameters),
+			Strict:      param.NewOpt(true),
+		},
+	}
 }
 
 func paramsToOpenAI(params []*Param) shared.FunctionParameters {
