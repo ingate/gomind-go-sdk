@@ -58,8 +58,9 @@ func paramsToOpenAI(params []*Param) shared.FunctionParameters {
 	}
 
 	result := shared.FunctionParameters{
-		"type":       "object",
-		"properties": properties,
+		"type":                 "object",
+		"properties":           properties,
+		"additionalProperties": false,
 	}
 	if len(required) > 0 {
 		result["required"] = required
@@ -87,6 +88,7 @@ func paramToOpenAI(p *Param) map[string]any {
 			}
 		}
 		result["properties"] = props
+		result["additionalProperties"] = false
 		if len(required) > 0 {
 			result["required"] = required
 		}
