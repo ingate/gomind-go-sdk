@@ -32,7 +32,7 @@ func (c *Client) Remember(ctx context.Context, subject, predicate, object string
 		"object", object,
 	)
 
-	return &resp.Data, nil
+	return &resp.Result, nil
 }
 
 // RememberMany stores multiple facts in the knowledge graph at once.

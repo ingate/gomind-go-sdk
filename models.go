@@ -3,7 +3,7 @@ package gomind
 // APIResponse is the generic response wrapper from Gomind API
 type APIResponse[T any] struct {
 	Status string `json:"status"`
-	Data   T      `json:"data"`
+	Result T      `json:"result"`
 }
 
 // Entity represents an entity in the knowledge graph
@@ -14,15 +14,14 @@ type Entity struct {
 }
 
 // Fact represents a single fact (triplet) in the knowledge graph
+// This matches the API's FactOutput format
 type Fact struct {
-	ID        string  `json:"id,omitempty"`
-	Subject   *Entity `json:"subject,omitempty"`
-	Predicate string  `json:"predicate"`
-	Object    *Entity `json:"object,omitempty"`
-	Value     string  `json:"value,omitempty"`
-	Context   string  `json:"context,omitempty"`
-	Source    string  `json:"source,omitempty"`
-	CreatedAt string  `json:"created_at,omitempty"`
+	Subject   string `json:"subject"`
+	Predicate string `json:"predicate"`
+	Object    string `json:"object,omitempty"`
+	Value     string `json:"value,omitempty"`
+	Context   string `json:"context,omitempty"`
+	Source    string `json:"source,omitempty"`
 }
 
 // RememberRequest is the request body for the remember endpoint
@@ -34,12 +33,14 @@ type RememberRequest struct {
 }
 
 // RememberResponse is the response from the remember endpoint
+// Matches API's FactOutput format
 type RememberResponse struct {
-	ID        string  `json:"id"`
-	Subject   *Entity `json:"subject"`
-	Predicate string  `json:"predicate"`
-	Object    *Entity `json:"object"`
-	CreatedAt string  `json:"created_at"`
+	Subject   string `json:"subject"`
+	Predicate string `json:"predicate"`
+	Object    string `json:"object,omitempty"`
+	Value     string `json:"value,omitempty"`
+	Context   string `json:"context,omitempty"`
+	Source    string `json:"source,omitempty"`
 }
 
 // RememberManyRequest is the request body for the remember_many endpoint
@@ -57,6 +58,7 @@ type RecallRequest struct {
 // RecallResponse is the response from the recall endpoint
 type RecallResponse struct {
 	Facts []Fact `json:"facts"`
+	Count int    `json:"count"`
 }
 
 // RecallConnectionsRequest is the request body for the recall_connections endpoint

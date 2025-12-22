@@ -88,7 +88,7 @@ func (c *Client) GetJobStatus(ctx context.Context, jobID string) (*JobStatusResp
 		return nil, fmt.Errorf("failed to parse job status response: %w", err)
 	}
 
-	return &resp.Data, nil
+	return &resp.Result, nil
 }
 
 // GetSystemPrompt fetches the recommended system prompt for LLM integration.
@@ -104,5 +104,5 @@ func (c *Client) GetSystemPrompt(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("failed to parse system prompt response: %w", err)
 	}
 
-	return resp.Data.Prompt, nil
+	return resp.Result.Prompt, nil
 }

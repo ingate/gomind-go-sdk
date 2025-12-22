@@ -143,9 +143,9 @@ func TestFormatFactsAsContext(t *testing.T) {
 			name: "single fact with entity object",
 			facts: []Fact{
 				{
-					Subject:   &Entity{Name: "Alice"},
+					Subject:   "Alice",
 					Predicate: "likes",
-					Object:    &Entity{Name: "Bob"},
+					Object:    "Bob",
 				},
 			},
 			expected: "memory[1]{subject,predicate,object}:\n  Alice,likes,Bob",
@@ -154,7 +154,7 @@ func TestFormatFactsAsContext(t *testing.T) {
 			name: "single fact with value",
 			facts: []Fact{
 				{
-					Subject:   &Entity{Name: "Alice"},
+					Subject:   "Alice",
 					Predicate: "prefers",
 					Value:     "dark mode",
 				},
@@ -165,12 +165,12 @@ func TestFormatFactsAsContext(t *testing.T) {
 			name: "multiple facts",
 			facts: []Fact{
 				{
-					Subject:   &Entity{Name: "Alice"},
+					Subject:   "Alice",
 					Predicate: "works_at",
-					Object:    &Entity{Name: "Acme Corp"},
+					Object:    "Acme Corp",
 				},
 				{
-					Subject:   &Entity{Name: "Bob"},
+					Subject:   "Bob",
 					Predicate: "likes",
 					Value:     "coffee",
 				},
@@ -178,23 +178,23 @@ func TestFormatFactsAsContext(t *testing.T) {
 			expected: "memory[2]{subject,predicate,object}:\n  Alice,works_at,Acme Corp\n  Bob,likes,coffee",
 		},
 		{
-			name: "fact with nil subject filtered",
+			name: "fact with empty subject filtered",
 			facts: []Fact{
 				{
-					Subject:   nil,
+					Subject:   "",
 					Predicate: "likes",
-					Object:    &Entity{Name: "Bob"},
+					Object:    "Bob",
 				},
 			},
 			expected: "",
 		},
 		{
-			name: "fact with nil object and empty value filtered",
+			name: "fact with empty object and empty value filtered",
 			facts: []Fact{
 				{
-					Subject:   &Entity{Name: "Alice"},
+					Subject:   "Alice",
 					Predicate: "likes",
-					Object:    nil,
+					Object:    "",
 					Value:     "",
 				},
 			},
@@ -204,7 +204,7 @@ func TestFormatFactsAsContext(t *testing.T) {
 			name: "fact with special characters",
 			facts: []Fact{
 				{
-					Subject:   &Entity{Name: "John Smith, Jr."},
+					Subject:   "John Smith, Jr.",
 					Predicate: "title",
 					Value:     "CEO",
 				},
