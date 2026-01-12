@@ -39,6 +39,7 @@ func Definitions() []Definition {
 		feedDef(),
 		forgetDef(),
 		forgetEntityDef(),
+		mindDef(),
 	}
 }
 
@@ -130,6 +131,27 @@ func forgetEntityDef() Definition {
 		Description: "Remove all facts about a specific entity from memory",
 		Parameters: []*Param{
 			{Name: "entity", Type: TypeString, Description: "The entity to remove all facts about", Required: true},
+		},
+	}
+}
+
+func mindDef() Definition {
+	return Definition{
+		Name:        "mind",
+		Description: "Make a natural language request that is fulfilled by an internal LLM agent using the knowledge graph",
+		Parameters: []*Param{
+			{Name: "prompt", Type: TypeString, Description: "Natural language request with optional {{placeholder}} syntax for variable interpolation", Required: true},
+			{
+				Name:        "context",
+				Type:        TypeObject,
+				Description: "Key-value pairs to interpolate into the prompt placeholders",
+			},
+			{
+				Name:        "output_schema",
+				Type:        TypeObject,
+				Description: "Expected response structure with field definitions (type, items, description)",
+				Required:    true,
+			},
 		},
 	}
 }

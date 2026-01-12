@@ -30,6 +30,7 @@ type RememberRequest struct {
 	Predicate string `json:"predicate"`
 	Object    string `json:"object"`
 	Context   string `json:"context,omitempty"`
+	Normalize bool   `json:"normalize,omitempty"`
 }
 
 // RememberResponse is the response from the remember endpoint
@@ -51,8 +52,13 @@ type RememberManyRequest struct {
 
 // RecallRequest is the request body for the recall endpoint
 type RecallRequest struct {
-	Query string `json:"query"`
-	Limit int    `json:"limit,omitempty"`
+	Query      string `json:"query,omitempty"`
+	Predicate  string `json:"predicate,omitempty"`
+	EntityType string `json:"entity_type,omitempty"`
+	RelatedTo  string `json:"related_to,omitempty"`
+	Depth      int    `json:"depth,omitempty"`
+	FuzzyMatch bool   `json:"fuzzy_match,omitempty"`
+	Limit      int    `json:"limit,omitempty"`
 }
 
 // RecallResponse is the response from the recall endpoint
@@ -96,18 +102,10 @@ type FeedRequest struct {
 type FeedResponse struct {
 	Status          string `json:"status"`
 	FactsExtracted  int    `json:"facts_extracted,omitempty"`
+	FactsCreated    int    `json:"facts_created,omitempty"`
 	EntitiesCreated int    `json:"entities_created,omitempty"`
 	Facts           []Fact `json:"facts,omitempty"`
 	JobID           string `json:"job_id,omitempty"`
-}
-
-// JobStatusResponse is the response from the jobs endpoint
-type JobStatusResponse struct {
-	ID              string `json:"id"`
-	Status          string `json:"status"`
-	FactsExtracted  int    `json:"facts_extracted,omitempty"`
-	EntitiesCreated int    `json:"entities_created,omitempty"`
-	Facts           []Fact `json:"facts,omitempty"`
 }
 
 // SystemPromptResponse is the response from the system-prompt endpoint

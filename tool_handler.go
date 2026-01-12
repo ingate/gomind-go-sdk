@@ -68,6 +68,13 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		}
 		return map[string]string{"status": "OK"}, nil
 
+	case "mind":
+		var req MindRequest
+		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
+			return nil, fmt.Errorf("failed to parse mind arguments: %w", err)
+		}
+		return c.Mind(ctx, req.Prompt, req.Context, req.OutputSchema)
+
 	default:
 		return nil, fmt.Errorf("unknown tool: %s", name)
 	}

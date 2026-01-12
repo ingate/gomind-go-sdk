@@ -7,19 +7,28 @@ import (
 )
 
 // Recall searches for facts in the knowledge graph.
+// For advanced search options, use RecallWithOptions.
 func (c *Client) Recall(ctx context.Context, query string, limit int) (*RecallResponse, error) {
 	if limit <= 0 {
 		limit = 10
 	}
 
-	req := RecallRequest{
+	return c.RecallWithOptions(ctx, RecallRequest{
 		Query: query,
 		Limit: limit,
+	})
+}
+
+// RecallWithOptions searches for facts with full control over search parameters.
+// Supports semantic search, graph traversal, predicate filtering, and more.
+func (c *Client) RecallWithOptions(ctx context.Context, req RecallRequest) (*RecallResponse, error) {
+	if req.Limit <= 0 {
+		req.Limit = 10
 	}
 
 	respBody, err := c.post(ctx, "/v1/recall", req)
 	if err != nil {
-		c.logger.Error("Gomind Recall failed", "error", err, "query", query)
+		c.logger.Error("Gomind Recall failed", "error", err, "query", req.Query)
 		return nil, err
 	}
 
@@ -29,7 +38,7 @@ func (c *Client) Recall(ctx context.Context, query string, limit int) (*RecallRe
 	}
 
 	c.logger.Info("Gomind Recall success",
-		"query", query,
+		"query", req.Query,
 		"factsFound", len(resp.Result.Facts),
 	)
 

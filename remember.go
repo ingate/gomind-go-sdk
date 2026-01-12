@@ -7,14 +7,19 @@ import (
 )
 
 // Remember stores a single fact in the knowledge graph.
+// For additional options like normalization, use RememberWithOptions.
 func (c *Client) Remember(ctx context.Context, subject, predicate, object string, context_ string) (*RememberResponse, error) {
-	req := RememberRequest{
+	return c.RememberWithOptions(ctx, RememberRequest{
 		Subject:   subject,
 		Predicate: predicate,
 		Object:    object,
 		Context:   context_,
-	}
+	})
+}
 
+// RememberWithOptions stores a single fact with full control over request parameters.
+// Use the Normalize field to enable LLM-based normalization of abbreviations.
+func (c *Client) RememberWithOptions(ctx context.Context, req RememberRequest) (*RememberResponse, error) {
 	respBody, err := c.post(ctx, "/v1/remember", req)
 	if err != nil {
 		c.logger.Error("Gomind Remember failed", "error", err)
@@ -27,9 +32,9 @@ func (c *Client) Remember(ctx context.Context, subject, predicate, object string
 	}
 
 	c.logger.Info("Gomind Remember success",
-		"subject", subject,
-		"predicate", predicate,
-		"object", object,
+		"subject", req.Subject,
+		"predicate", req.Predicate,
+		"object", req.Object,
 	)
 
 	return &resp.Result, nil
