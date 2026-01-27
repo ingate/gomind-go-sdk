@@ -21,7 +21,7 @@ type Client struct {
 // NewClient creates a new Gomind client.
 func NewClient(baseURL, apiKey string, opts ...Option) (*Client, error) {
 	if baseURL == "" {
-		baseURL = "https://gomind.osushi.io"
+		baseURL = "https://api.gominddb.com"
 	}
 
 	if apiKey == "" {
