@@ -20,6 +20,15 @@ type noopLogger struct{}
 func (n *noopLogger) Info(msg string, keysAndValues ...any)  {}
 func (n *noopLogger) Error(msg string, keysAndValues ...any) {}
 
+// WithBaseURL sets the API base URL. If not set, defaults to https://api.gominddb.com.
+func WithBaseURL(baseURL string) Option {
+	return func(c *Client) {
+		if baseURL != "" {
+			c.baseURL = baseURL
+		}
+	}
+}
+
 // WithLogger sets a custom logger.
 func WithLogger(logger Logger) Option {
 	return func(c *Client) {

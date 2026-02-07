@@ -19,17 +19,13 @@ type Client struct {
 }
 
 // NewClient creates a new Gomind client.
-func NewClient(baseURL, apiKey string, opts ...Option) (*Client, error) {
-	if baseURL == "" {
-		baseURL = "https://api.gominddb.com"
-	}
-
+func NewClient(apiKey string, opts ...Option) (*Client, error) {
 	if apiKey == "" {
 		return nil, fmt.Errorf("api key is required")
 	}
 
 	c := &Client{
-		baseURL: baseURL,
+		baseURL: "https://api.gominddb.com",
 		apiKey:  apiKey,
 		httpClient: &http.Client{
 			Timeout: 30 * time.Second,

@@ -22,8 +22,11 @@ import (
 )
 
 func main() {
-    // Create a new client
-    client := gomind.NewClient("https://api.gomind.example.com", "your-api-key")
+    // Create a new client (uses https://api.gominddb.com by default)
+    client, err := gomind.NewClient("your-api-key")
+    if err != nil {
+        log.Fatal(err)
+    }
 
     ctx := context.Background()
 
@@ -50,18 +53,24 @@ func main() {
 ## Options
 
 ```go
+// Custom base URL (default is https://api.gominddb.com)
+client, _ := gomind.NewClient(apiKey, gomind.WithBaseURL("https://api.gomind.example.com"))
+
 // Custom HTTP client
-client := gomind.NewClient(baseURL, apiKey,
+client, _ := gomind.NewClient(apiKey,
+    gomind.WithBaseURL(baseURL),
     gomind.WithHTTPClient(customHTTPClient),
 )
 
 // Custom timeout
-client := gomind.NewClient(baseURL, apiKey,
+client, _ := gomind.NewClient(apiKey,
+    gomind.WithBaseURL(baseURL),
     gomind.WithTimeout(60 * time.Second),
 )
 
 // Custom logger (implements gomind.Logger interface)
-client := gomind.NewClient(baseURL, apiKey,
+client, _ := gomind.NewClient(apiKey,
+    gomind.WithBaseURL(baseURL),
     gomind.WithLogger(myLogger),
 )
 ```
