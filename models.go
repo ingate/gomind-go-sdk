@@ -52,13 +52,14 @@ type RememberManyRequest struct {
 
 // RecallRequest is the request body for the recall endpoint
 type RecallRequest struct {
-	Query      string `json:"query,omitempty"`
-	Predicate  string `json:"predicate,omitempty"`
-	EntityType string `json:"entity_type,omitempty"`
-	RelatedTo  string `json:"related_to,omitempty"`
-	Depth      int    `json:"depth,omitempty"`
-	FuzzyMatch bool   `json:"fuzzy_match,omitempty"`
-	Limit      int    `json:"limit,omitempty"`
+	Query      string   `json:"query,omitempty"`
+	Predicate  string   `json:"predicate,omitempty"`
+	Predicates []string `json:"predicates,omitempty"`
+	EntityType string   `json:"entity_type,omitempty"`
+	RelatedTo  string   `json:"related_to,omitempty"`
+	Depth      int      `json:"depth,omitempty"`
+	FuzzyMatch bool     `json:"fuzzy_match,omitempty"`
+	Limit      int      `json:"limit,omitempty"`
 }
 
 // RecallResponse is the response from the recall endpoint

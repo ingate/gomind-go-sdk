@@ -86,6 +86,8 @@ func recallDef() Definition {
 		Description: "Search memory for facts about an entity or topic",
 		Parameters: []*Param{
 			{Name: "query", Type: TypeString, Description: "Entity or topic to search for", Required: true},
+			{Name: "predicate", Type: TypeString, Description: "Filter by a single relationship type (e.g. works_at)"},
+			{Name: "predicates", Type: TypeArray, Description: "Filter by multiple relationship types (e.g. [question_text, answer_text]). Results match any listed predicate.", Items: &Param{Type: TypeString}},
 			{Name: "limit", Type: TypeInteger, Description: "Maximum number of results to return (default: 10)"},
 		},
 	}

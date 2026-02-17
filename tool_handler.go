@@ -32,7 +32,7 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse recall arguments: %w", err)
 		}
-		return c.Recall(ctx, req.Query, req.Limit)
+		return c.RecallWithOptions(ctx, req)
 
 	case "recall_connections":
 		var req RecallConnectionsRequest
