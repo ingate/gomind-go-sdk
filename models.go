@@ -64,8 +64,10 @@ type RecallRequest struct {
 
 // RecallResponse is the response from the recall endpoint
 type RecallResponse struct {
-	Facts []Fact `json:"facts"`
-	Count int    `json:"count"`
+	Facts       []Fact   `json:"facts"`
+	Count       int      `json:"count"`
+	SearchMode  string   `json:"search_mode,omitempty"`
+	Suggestions []string `json:"suggestions,omitempty"`
 }
 
 // RecallConnectionsRequest is the request body for the recall_connections endpoint
