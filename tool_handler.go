@@ -15,14 +15,14 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse remember arguments: %w", err)
 		}
-		return c.Remember(ctx, req.Subject, req.Predicate, req.Object, req.Context)
+		return c.RememberWithOptions(ctx, req)
 
 	case "remember_many":
 		var req RememberManyRequest
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse remember_many arguments: %w", err)
 		}
-		if err := c.RememberMany(ctx, req.Facts, req.Source); err != nil {
+		if err := c.RememberManyWithOptions(ctx, req); err != nil {
 			return nil, err
 		}
 		return map[string]string{"status": "OK"}, nil
@@ -39,21 +39,21 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse recall_connections arguments: %w", err)
 		}
-		return c.RecallConnections(ctx, req.Entity, req.Depth)
+		return c.RecallConnectionsWithOptions(ctx, req)
 
 	case "feed":
 		var req FeedRequest
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse feed arguments: %w", err)
 		}
-		return c.Feed(ctx, req.Content, req.Source)
+		return c.FeedWithOptions(ctx, req)
 
 	case "forget":
 		var req ForgetRequest
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse forget arguments: %w", err)
 		}
-		if err := c.Forget(ctx, req.Subject, req.Predicate, req.Object); err != nil {
+		if err := c.ForgetWithOptions(ctx, req); err != nil {
 			return nil, err
 		}
 		return map[string]string{"status": "OK"}, nil
@@ -63,7 +63,7 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse forget_entity arguments: %w", err)
 		}
-		if err := c.ForgetEntity(ctx, req.Entity); err != nil {
+		if err := c.ForgetEntityWithOptions(ctx, req); err != nil {
 			return nil, err
 		}
 		return map[string]string{"status": "OK"}, nil
@@ -73,7 +73,7 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
 			return nil, fmt.Errorf("failed to parse mind arguments: %w", err)
 		}
-		return c.Mind(ctx, req.Prompt, req.Context, req.OutputSchema)
+		return c.MindWithOptions(ctx, req)
 
 	default:
 		return nil, fmt.Errorf("unknown tool: %s", name)

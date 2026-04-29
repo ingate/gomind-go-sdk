@@ -43,6 +43,17 @@ func Definitions() []Definition {
 	}
 }
 
+// collectionParam returns the standard optional collection parameter
+// shared by every memory tool. The empty string (or reserved aliases like
+// "default") maps to the default bucket server-side.
+func collectionParam() *Param {
+	return &Param{
+		Name:        "collection",
+		Type:        TypeString,
+		Description: "Optional collection code to scope this operation. Leave empty to use the client's default bucket.",
+	}
+}
+
 func rememberDef() Definition {
 	return Definition{
 		Name:        "remember",
@@ -52,6 +63,7 @@ func rememberDef() Definition {
 			{Name: "predicate", Type: TypeString, Description: "The relationship type (e.g., works_at, likes, has_skill)", Required: true},
 			{Name: "object", Type: TypeString, Description: "The related entity or value", Required: true},
 			{Name: "context", Type: TypeString, Description: "Optional context or source for the fact"},
+			collectionParam(),
 		},
 	}
 }
@@ -76,6 +88,7 @@ func rememberManyDef() Definition {
 				},
 			},
 			{Name: "source", Type: TypeString, Description: "Source identifier for traceability"},
+			collectionParam(),
 		},
 	}
 }
@@ -89,6 +102,7 @@ func recallDef() Definition {
 			{Name: "predicate", Type: TypeString, Description: "Filter by a single relationship type (e.g. works_at)"},
 			{Name: "predicates", Type: TypeArray, Description: "Filter by multiple relationship types (e.g. [question_text, answer_text]). Results match any listed predicate.", Items: &Param{Type: TypeString}},
 			{Name: "limit", Type: TypeInteger, Description: "Maximum number of results to return (default: 10)"},
+			collectionParam(),
 		},
 	}
 }
@@ -100,6 +114,7 @@ func recallConnectionsDef() Definition {
 		Parameters: []*Param{
 			{Name: "entity", Type: TypeString, Description: "The entity to find connections for", Required: true},
 			{Name: "depth", Type: TypeInteger, Description: "How many levels of connections to traverse (default: 2)"},
+			collectionParam(),
 		},
 	}
 }
@@ -111,6 +126,7 @@ func feedDef() Definition {
 		Parameters: []*Param{
 			{Name: "content", Type: TypeString, Description: "Raw text content to extract facts from", Required: true},
 			{Name: "source", Type: TypeString, Description: "Source identifier for traceability"},
+			collectionParam(),
 		},
 	}
 }
@@ -123,6 +139,7 @@ func forgetDef() Definition {
 			{Name: "subject", Type: TypeString, Description: "The entity the fact is about", Required: true},
 			{Name: "predicate", Type: TypeString, Description: "The relationship type", Required: true},
 			{Name: "object", Type: TypeString, Description: "The related entity or value", Required: true},
+			collectionParam(),
 		},
 	}
 }
@@ -133,11 +150,15 @@ func forgetEntityDef() Definition {
 		Description: "Remove all facts about a specific entity from memory",
 		Parameters: []*Param{
 			{Name: "entity", Type: TypeString, Description: "The entity to remove all facts about", Required: true},
+			collectionParam(),
 		},
 	}
 }
 
 func mindDef() Definition {
+	// Mind accepts collection so direct API callers can scope the
+	// session. Nested tool calls made by the internal agent have
+	// collection stripped server-side — the session-level scope wins.
 	return Definition{
 		Name:        "mind",
 		Description: "Make a natural language request that is fulfilled by an internal LLM agent using the knowledge graph",
@@ -154,6 +175,7 @@ func mindDef() Definition {
 				Description: "Expected response structure with field definitions (type, items, description)",
 				Required:    true,
 			},
+			collectionParam(),
 		},
 	}
 }

@@ -14,6 +14,7 @@ import (
 type Client struct {
 	baseURL    string
 	apiKey     string
+	collection string
 	httpClient *http.Client
 	logger     Logger
 }
@@ -85,7 +86,42 @@ func (c *Client) post(ctx context.Context, endpoint string, body any) ([]byte, e
 	return c.doRequest(ctx, http.MethodPost, endpoint, body)
 }
 
+// resolveCollection applies plan §9 body precedence to merge the
+// per-request override with the client default set via WithCollection.
+//
+//   - reqCol != nil               → body wins, even when *reqCol == "".
+//     This is what lets callers escape the
+//     client default and force the server's
+//     default bucket on a per-request basis
+//     (DefaultBucket()).
+//   - reqCol == nil, c.collection == "" → leave the field absent so
+//     server-side query/header scope can apply.
+//   - reqCol == nil, c.collection != "" → inject the client default.
+//
+// Pre-fix this returned a plain string and treated "" the same as
+// "absent", which made the explicit-empty override unreachable from
+// the SDK (bug 16).
+func (c *Client) resolveCollection(reqCol *string) *string {
+	if reqCol != nil {
+		return reqCol
+	}
+	if c.collection == "" {
+		return nil
+	}
+	return &c.collection
+}
+
 // get performs a GET request to the Gomind API.
 func (c *Client) get(ctx context.Context, endpoint string) ([]byte, error) {
 	return c.doRequest(ctx, http.MethodGet, endpoint, nil)
+}
+
+// patch performs a PATCH request to the Gomind API.
+func (c *Client) patch(ctx context.Context, endpoint string, body any) ([]byte, error) {
+	return c.doRequest(ctx, http.MethodPatch, endpoint, body)
+}
+
+// delete performs a DELETE request to the Gomind API.
+func (c *Client) delete(ctx context.Context, endpoint string) ([]byte, error) {
+	return c.doRequest(ctx, http.MethodDelete, endpoint, nil)
 }

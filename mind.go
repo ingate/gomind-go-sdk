@@ -7,10 +7,13 @@ import (
 )
 
 // MindRequest is the request body for the mind endpoint.
+// See RememberRequest.Collection for the *string semantics applied to
+// Collection here.
 type MindRequest struct {
 	Prompt       string            `json:"prompt"`
 	Context      map[string]string `json:"context,omitempty"`
 	OutputSchema map[string]any    `json:"output_schema"`
+	Collection   *string           `json:"collection,omitempty"`
 }
 
 // MindResponse is the response from the mind endpoint.
@@ -28,11 +31,17 @@ type MindMeta struct {
 // Mind makes a natural language request that is fulfilled by an internal LLM agent.
 // The agent uses Gomind's MCP server to query and manipulate the knowledge graph automatically.
 func (c *Client) Mind(ctx context.Context, prompt string, context_ map[string]string, outputSchema map[string]any) (*MindResponse, error) {
-	req := MindRequest{
+	return c.MindWithOptions(ctx, MindRequest{
 		Prompt:       prompt,
 		Context:      context_,
 		OutputSchema: outputSchema,
-	}
+	})
+}
+
+// MindWithOptions issues a mind request with full control over the request
+// payload, including the optional Collection field.
+func (c *Client) MindWithOptions(ctx context.Context, req MindRequest) (*MindResponse, error) {
+	req.Collection = c.resolveCollection(req.Collection)
 
 	respBody, err := c.post(ctx, "/v1/mind", req)
 	if err != nil {

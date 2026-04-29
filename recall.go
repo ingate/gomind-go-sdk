@@ -26,6 +26,7 @@ func (c *Client) RecallWithOptions(ctx context.Context, req RecallRequest) (*Rec
 		req.Limit = 10
 	}
 
+	req.Collection = c.resolveCollection(req.Collection)
 	respBody, err := c.post(ctx, "/v1/recall", req)
 	if err != nil {
 		c.logger.Error("Gomind Recall failed", "error", err, "query", req.Query)
@@ -47,18 +48,23 @@ func (c *Client) RecallWithOptions(ctx context.Context, req RecallRequest) (*Rec
 
 // RecallConnections gets all entities connected to a specific entity.
 func (c *Client) RecallConnections(ctx context.Context, entity string, depth int) (*RecallResponse, error) {
-	if depth <= 0 {
-		depth = 2
-	}
-
-	req := RecallConnectionsRequest{
+	return c.RecallConnectionsWithOptions(ctx, RecallConnectionsRequest{
 		Entity: entity,
 		Depth:  depth,
+	})
+}
+
+// RecallConnectionsWithOptions gets connections with full control over the
+// request payload, including the optional Collection field.
+func (c *Client) RecallConnectionsWithOptions(ctx context.Context, req RecallConnectionsRequest) (*RecallResponse, error) {
+	if req.Depth <= 0 {
+		req.Depth = 2
 	}
+	req.Collection = c.resolveCollection(req.Collection)
 
 	respBody, err := c.post(ctx, "/v1/recall_connections", req)
 	if err != nil {
-		c.logger.Error("Gomind RecallConnections failed", "error", err, "entity", entity)
+		c.logger.Error("Gomind RecallConnections failed", "error", err, "entity", req.Entity)
 		return nil, err
 	}
 
@@ -68,7 +74,7 @@ func (c *Client) RecallConnections(ctx context.Context, entity string, depth int
 	}
 
 	c.logger.Info("Gomind RecallConnections success",
-		"entity", entity,
+		"entity", req.Entity,
 		"factsFound", len(resp.Result.Facts),
 	)
 

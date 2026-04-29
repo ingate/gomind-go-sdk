@@ -24,13 +24,23 @@ type Fact struct {
 	Source    string `json:"source,omitempty"`
 }
 
-// RememberRequest is the request body for the remember endpoint
+// RememberRequest is the request body for the remember endpoint.
+//
+// Collection is a *string so the SDK can express three intents
+// distinctly (plan §9 body precedence):
+//
+//   - nil       → fall back to the client default set via WithCollection.
+//   - &""       → explicitly select the server default bucket, even if a
+//     non-empty client default is configured. Use the
+//     DefaultBucket() helper to construct this value.
+//   - &"code"   → scope to the named collection. Use CollectionScope("code").
 type RememberRequest struct {
-	Subject   string `json:"subject"`
-	Predicate string `json:"predicate"`
-	Object    string `json:"object"`
-	Context   string `json:"context,omitempty"`
-	Normalize bool   `json:"normalize,omitempty"`
+	Subject    string  `json:"subject"`
+	Predicate  string  `json:"predicate"`
+	Object     string  `json:"object"`
+	Context    string  `json:"context,omitempty"`
+	Normalize  bool    `json:"normalize,omitempty"`
+	Collection *string `json:"collection,omitempty"`
 }
 
 // RememberResponse is the response from the remember endpoint
@@ -44,13 +54,16 @@ type RememberResponse struct {
 	Source    string `json:"source,omitempty"`
 }
 
-// RememberManyRequest is the request body for the remember_many endpoint
+// RememberManyRequest is the request body for the remember_many endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type RememberManyRequest struct {
-	Facts  []RememberRequest `json:"facts"`
-	Source string            `json:"source,omitempty"`
+	Facts      []RememberRequest `json:"facts"`
+	Source     string            `json:"source,omitempty"`
+	Collection *string           `json:"collection,omitempty"`
 }
 
-// RecallRequest is the request body for the recall endpoint
+// RecallRequest is the request body for the recall endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type RecallRequest struct {
 	Query      string   `json:"query,omitempty"`
 	Predicate  string   `json:"predicate,omitempty"`
@@ -60,6 +73,7 @@ type RecallRequest struct {
 	Depth      int      `json:"depth,omitempty"`
 	FuzzyMatch bool     `json:"fuzzy_match,omitempty"`
 	Limit      int      `json:"limit,omitempty"`
+	Collection *string  `json:"collection,omitempty"`
 }
 
 // RecallResponse is the response from the recall endpoint
@@ -70,22 +84,28 @@ type RecallResponse struct {
 	Suggestions []string `json:"suggestions,omitempty"`
 }
 
-// RecallConnectionsRequest is the request body for the recall_connections endpoint
+// RecallConnectionsRequest is the request body for the recall_connections endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type RecallConnectionsRequest struct {
-	Entity string `json:"entity"`
-	Depth  int    `json:"depth,omitempty"`
+	Entity     string  `json:"entity"`
+	Depth      int     `json:"depth,omitempty"`
+	Collection *string `json:"collection,omitempty"`
 }
 
-// ForgetRequest is the request body for the forget endpoint
+// ForgetRequest is the request body for the forget endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type ForgetRequest struct {
-	Subject   string `json:"subject"`
-	Predicate string `json:"predicate"`
-	Object    string `json:"object"`
+	Subject    string  `json:"subject"`
+	Predicate  string  `json:"predicate"`
+	Object     string  `json:"object"`
+	Collection *string `json:"collection,omitempty"`
 }
 
-// ForgetEntityRequest is the request body for the forget_entity endpoint
+// ForgetEntityRequest is the request body for the forget_entity endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type ForgetEntityRequest struct {
-	Entity string `json:"entity"`
+	Entity     string  `json:"entity"`
+	Collection *string `json:"collection,omitempty"`
 }
 
 // FeedMessage represents a message in a conversation for the feed endpoint
@@ -94,11 +114,13 @@ type FeedMessage struct {
 	Content string `json:"content"`
 }
 
-// FeedRequest is the request body for the feed endpoint
+// FeedRequest is the request body for the feed endpoint.
+// See RememberRequest.Collection for the *string semantics.
 type FeedRequest struct {
-	Content  string        `json:"content,omitempty"`
-	Messages []FeedMessage `json:"messages,omitempty"`
-	Source   string        `json:"source,omitempty"`
+	Content    string        `json:"content,omitempty"`
+	Messages   []FeedMessage `json:"messages,omitempty"`
+	Source     string        `json:"source,omitempty"`
+	Collection *string       `json:"collection,omitempty"`
 }
 
 // FeedResponse is the response from the feed endpoint (sync mode)

@@ -8,10 +8,24 @@ import (
 
 // Feed ingests raw content and automatically extracts facts using LLM.
 func (c *Client) Feed(ctx context.Context, content string, source string) (*FeedResponse, error) {
-	req := FeedRequest{
+	return c.FeedWithOptions(ctx, FeedRequest{
 		Content: content,
 		Source:  source,
-	}
+	})
+}
+
+// FeedMessages ingests conversation messages and automatically extracts facts.
+func (c *Client) FeedMessages(ctx context.Context, messages []FeedMessage, source string) (*FeedResponse, error) {
+	return c.FeedWithOptions(ctx, FeedRequest{
+		Messages: messages,
+		Source:   source,
+	})
+}
+
+// FeedWithOptions ingests content or messages with full control over the
+// request payload, including the optional Collection field.
+func (c *Client) FeedWithOptions(ctx context.Context, req FeedRequest) (*FeedResponse, error) {
+	req.Collection = c.resolveCollection(req.Collection)
 
 	respBody, err := c.post(ctx, "/v1/feed", req)
 	if err != nil {
@@ -27,33 +41,7 @@ func (c *Client) Feed(ctx context.Context, content string, source string) (*Feed
 	c.logger.Info("Gomind Feed success",
 		"status", resp.Status,
 		"factsExtracted", resp.FactsExtracted,
-	)
-
-	return &resp, nil
-}
-
-// FeedMessages ingests conversation messages and automatically extracts facts.
-func (c *Client) FeedMessages(ctx context.Context, messages []FeedMessage, source string) (*FeedResponse, error) {
-	req := FeedRequest{
-		Messages: messages,
-		Source:   source,
-	}
-
-	respBody, err := c.post(ctx, "/v1/feed", req)
-	if err != nil {
-		c.logger.Error("Gomind FeedMessages failed", "error", err)
-		return nil, err
-	}
-
-	var resp FeedResponse
-	if err := json.Unmarshal(respBody, &resp); err != nil {
-		return nil, fmt.Errorf("failed to parse feed response: %w", err)
-	}
-
-	c.logger.Info("Gomind FeedMessages success",
-		"status", resp.Status,
-		"factsExtracted", resp.FactsExtracted,
-		"messageCount", len(messages),
+		"messageCount", len(req.Messages),
 	)
 
 	return &resp, nil
