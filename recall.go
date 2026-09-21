@@ -10,7 +10,7 @@ import (
 // For advanced search options, use RecallWithOptions.
 func (c *Client) Recall(ctx context.Context, query string, limit int) (*RecallResponse, error) {
 	if limit <= 0 {
-		limit = 10
+		limit = 20
 	}
 
 	return c.RecallWithOptions(ctx, RecallRequest{
@@ -23,7 +23,7 @@ func (c *Client) Recall(ctx context.Context, query string, limit int) (*RecallRe
 // Supports semantic search, graph traversal, predicate filtering, and more.
 func (c *Client) RecallWithOptions(ctx context.Context, req RecallRequest) (*RecallResponse, error) {
 	if req.Limit <= 0 {
-		req.Limit = 10
+		req.Limit = 20
 	}
 
 	req.Collection = c.resolveCollection(req.Collection)

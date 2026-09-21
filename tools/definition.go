@@ -8,6 +8,7 @@ type ParamType string
 const (
 	TypeString  ParamType = "string"
 	TypeInteger ParamType = "integer"
+	TypeBoolean ParamType = "boolean"
 	TypeArray   ParamType = "array"
 	TypeObject  ParamType = "object"
 )
@@ -101,7 +102,8 @@ func recallDef() Definition {
 			{Name: "query", Type: TypeString, Description: "Entity or topic to search for", Required: true},
 			{Name: "predicate", Type: TypeString, Description: "Filter by a single relationship type (e.g. works_at)"},
 			{Name: "predicates", Type: TypeArray, Description: "Filter by multiple relationship types (e.g. [question_text, answer_text]). Results match any listed predicate.", Items: &Param{Type: TypeString}},
-			{Name: "limit", Type: TypeInteger, Description: "Maximum number of results to return (default: 10)"},
+			{Name: "limit", Type: TypeInteger, Description: "Maximum number of results to return (default: 20)"},
+			{Name: "offset", Type: TypeInteger, Description: "Number of results to skip (default: 0)"},
 			collectionParam(),
 		},
 	}
@@ -113,7 +115,9 @@ func recallConnectionsDef() Definition {
 		Description: "Get all entities connected to a specific entity in the knowledge graph",
 		Parameters: []*Param{
 			{Name: "entity", Type: TypeString, Description: "The entity to find connections for", Required: true},
-			{Name: "depth", Type: TypeInteger, Description: "How many levels of connections to traverse (default: 2)"},
+			{Name: "depth", Type: TypeInteger, Description: "How many levels of connections to traverse (default 2)"},
+			{Name: "limit", Type: TypeInteger, Description: "Maximum number of connections to return (default 20)"},
+			{Name: "offset", Type: TypeInteger, Description: "Number of connections to skip (default 0)"},
 			collectionParam(),
 		},
 	}
@@ -122,10 +126,11 @@ func recallConnectionsDef() Definition {
 func feedDef() Definition {
 	return Definition{
 		Name:        "feed",
-		Description: "Ingest raw text content (e.g., meeting notes, documents) and automatically extract structured facts",
+		Description: "Ingest raw text or chat and extract structured facts. Set reason=true to recall existing memory, keep durable type:id facts, normalize, and skip duplicates.",
 		Parameters: []*Param{
 			{Name: "content", Type: TypeString, Description: "Raw text content to extract facts from", Required: true},
 			{Name: "source", Type: TypeString, Description: "Source identifier for traceability"},
+			{Name: "reason", Type: TypeBoolean, Description: "When true, reason over existing graph before storing. Default is a single extraction pass."},
 			collectionParam(),
 		},
 	}

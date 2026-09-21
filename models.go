@@ -73,6 +73,7 @@ type RecallRequest struct {
 	Depth      int      `json:"depth,omitempty"`
 	FuzzyMatch bool     `json:"fuzzy_match,omitempty"`
 	Limit      int      `json:"limit,omitempty"`
+	Offset     int      `json:"offset,omitempty"`
 	Collection *string  `json:"collection,omitempty"`
 }
 
@@ -89,6 +90,8 @@ type RecallResponse struct {
 type RecallConnectionsRequest struct {
 	Entity     string  `json:"entity"`
 	Depth      int     `json:"depth,omitempty"`
+	Limit      int     `json:"limit,omitempty"`
+	Offset     int     `json:"offset,omitempty"`
 	Collection *string `json:"collection,omitempty"`
 }
 
@@ -121,6 +124,7 @@ type FeedRequest struct {
 	Messages   []FeedMessage `json:"messages,omitempty"`
 	Source     string        `json:"source,omitempty"`
 	Collection *string       `json:"collection,omitempty"`
+	Reason     bool          `json:"reason,omitempty"`
 }
 
 // FeedResponse is the response from the feed endpoint (sync mode)
