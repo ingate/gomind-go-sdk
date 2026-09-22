@@ -16,12 +16,14 @@ type Entity struct {
 // Fact represents a single fact (triplet) in the knowledge graph
 // This matches the API's FactOutput format
 type Fact struct {
-	Subject   string `json:"subject"`
-	Predicate string `json:"predicate"`
-	Object    string `json:"object,omitempty"`
-	Value     string `json:"value,omitempty"`
-	Context   string `json:"context,omitempty"`
-	Source    string `json:"source,omitempty"`
+	Subject   string  `json:"subject"`
+	Predicate string  `json:"predicate"`
+	Object    string  `json:"object,omitempty"`
+	Value     string  `json:"value,omitempty"`
+	Context   string  `json:"context,omitempty"`
+	Source    string  `json:"source,omitempty"`
+	Score     float64 `json:"score,omitempty"`
+	CreatedAt string  `json:"created_at,omitempty"`
 }
 
 // RememberRequest is the request body for the remember endpoint.
@@ -74,7 +76,12 @@ type RecallRequest struct {
 	FuzzyMatch bool     `json:"fuzzy_match,omitempty"`
 	Limit      int      `json:"limit,omitempty"`
 	Offset     int      `json:"offset,omitempty"`
-	Collection *string  `json:"collection,omitempty"`
+	// SortBy orders listing results: created_at, predicate, subject, object, confidence, id.
+	// Empty keeps server default (semantic relevance when a query embedding is used).
+	SortBy string `json:"sort_by,omitempty"`
+	// SortOrder is asc or desc. Empty means asc.
+	SortOrder  string  `json:"sort_order,omitempty"`
+	Collection *string `json:"collection,omitempty"`
 }
 
 // RecallResponse is the response from the recall endpoint

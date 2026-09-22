@@ -104,6 +104,8 @@ func recallDef() Definition {
 			{Name: "predicates", Type: TypeArray, Description: "Filter by multiple relationship types (e.g. [question_text, answer_text]). Results match any listed predicate.", Items: &Param{Type: TypeString}},
 			{Name: "limit", Type: TypeInteger, Description: "Maximum number of results to return (default: 20)"},
 			{Name: "offset", Type: TypeInteger, Description: "Number of results to skip (default: 0)"},
+			{Name: "sort_by", Type: TypeString, Description: "Order listing results: created_at, predicate, subject, object, confidence, or id. Omit to keep semantic relevance order."},
+			{Name: "sort_order", Type: TypeString, Description: "asc or desc (default asc). Tie-break is id."},
 			collectionParam(),
 		},
 	}
