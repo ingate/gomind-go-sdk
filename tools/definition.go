@@ -38,6 +38,7 @@ func Definitions() []Definition {
 		recallDef(),
 		recallConnectionsDef(),
 		feedDef(),
+		updateDef(),
 		forgetDef(),
 		forgetEntityDef(),
 		mindDef(),
@@ -133,6 +134,23 @@ func feedDef() Definition {
 			{Name: "content", Type: TypeString, Description: "Raw text content to extract facts from", Required: true},
 			{Name: "source", Type: TypeString, Description: "Source identifier for traceability"},
 			{Name: "reason", Type: TypeBoolean, Description: "When true, reason over existing graph before storing. Default is a single extraction pass."},
+			collectionParam(),
+		},
+	}
+}
+
+func updateDef() Definition {
+	return Definition{
+		Name:        "update",
+		Description: "Update a single existing fact in place. Identify it by subject, predicate, and object; set at least one of new_subject, new_predicate, new_object, or context.",
+		Parameters: []*Param{
+			{Name: "subject", Type: TypeString, Description: "The entity the fact is about", Required: true},
+			{Name: "predicate", Type: TypeString, Description: "The current relationship type", Required: true},
+			{Name: "object", Type: TypeString, Description: "The current related entity or value", Required: true},
+			{Name: "new_subject", Type: TypeString, Description: "Replacement subject. Omit to keep the current subject."},
+			{Name: "new_predicate", Type: TypeString, Description: "Replacement relationship type. Omit to keep the current predicate."},
+			{Name: "new_object", Type: TypeString, Description: "Replacement object. Omit to keep the current object."},
+			{Name: "context", Type: TypeString, Description: "Replacement context. Omit to keep the current context."},
 			collectionParam(),
 		},
 	}

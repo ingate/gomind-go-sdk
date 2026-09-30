@@ -285,6 +285,14 @@ func TestResolveCollection_ExplicitEmptyAcrossEndpoints(t *testing.T) {
 	}
 	check(t, "forget_entity")
 
+	if _, err := client.UpdateWithOptions(ctx, UpdateRequest{
+		Subject: "s", Predicate: "p", Object: "o", NewObject: "n", Collection: DefaultBucket(),
+	}); err != nil {
+		t.Fatalf("Update: %v", err)
+	}
+	check(t, "update")
+
+
 	if _, err := client.FeedWithOptions(ctx, FeedRequest{
 		Content: "x", Collection: DefaultBucket(),
 	}); err != nil {

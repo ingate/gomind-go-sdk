@@ -111,6 +111,21 @@ type ForgetRequest struct {
 	Collection *string `json:"collection,omitempty"`
 }
 
+// UpdateRequest is the request body for the update endpoint.
+// Identify the fact by Subject/Predicate/Object; set at least one of
+// NewSubject, NewPredicate, NewObject, or Context.
+// See RememberRequest.Collection for the *string semantics.
+type UpdateRequest struct {
+	Subject      string  `json:"subject"`
+	Predicate    string  `json:"predicate"`
+	Object       string  `json:"object"`
+	NewSubject   string  `json:"new_subject,omitempty"`
+	NewPredicate string  `json:"new_predicate,omitempty"`
+	NewObject    string  `json:"new_object,omitempty"`
+	Context      string  `json:"context,omitempty"`
+	Collection   *string `json:"collection,omitempty"`
+}
+
 // ForgetEntityRequest is the request body for the forget_entity endpoint.
 // See RememberRequest.Collection for the *string semantics.
 type ForgetEntityRequest struct {

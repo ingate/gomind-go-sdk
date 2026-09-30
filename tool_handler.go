@@ -48,6 +48,13 @@ func (c *Client) HandleToolCall(ctx context.Context, name string, arguments stri
 		}
 		return c.FeedWithOptions(ctx, req)
 
+	case "update":
+		var req UpdateRequest
+		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
+			return nil, fmt.Errorf("failed to parse update arguments: %w", err)
+		}
+		return c.UpdateWithOptions(ctx, req)
+
 	case "forget":
 		var req ForgetRequest
 		if err := json.Unmarshal([]byte(arguments), &req); err != nil {
